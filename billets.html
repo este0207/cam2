@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billetterie</title>
+<link rel="stylesheet" href="../css/login.css">
+<style>
+input[type="number"] {
+appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+appearance: none;
+margin: 0;
+}
+
+.input-box {
+position: relative;
+}
+
+.input-box input[type="number"] {
+width: 100%;
+padding-right: 60px;
+}
+
+.number-controls {
+position: absolute;
+right: 10px;
+top: 15px;
+display: flex;
+gap: 5px;
+}
+
+.number-controls button {
+background-color: rgba(255, 255, 255, 0.1);
+border: 1px solid rgba(255, 255, 255, 0.2);
+color: white;
+width: 20px;
+height: 20px;
+border-radius: 50%;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 16px;
+padding: 0;
+transition: background-color 0.3s;
+}
+
+.number-controls button:hover {
+background-color: rgba(255, 255, 255, 0.2);
+}
+
+.ticket-info {
+font-size: 14px;
+color: #fff;
+opacity: 0.8;
+text-align: left;
+margin-top: 5px;
+margin-left: 10px;
+}
+
+.price-display {
+background-color: rgba(255, 255, 255, 0.1);
+padding: 15px;
+border-radius: 25px;
+margin: 20px 0;
+font-size: 18px;
+border: 2px solid rgba(255, 255, 255, 0.2);
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<h1>Billetterie</h1>
+<form action="../backend/tickets.php" method="post">
+<div class="input-box">
+<input type="email" name="email" placeholder="Votre email" required>
+</div>
+<div class="input-box">
+<input type="number" name="adult_tickets" min="0" value="0" placeholder="Nombre de billets adultes" required>
+<div class="number-controls">
+<button type="button" class="decrease">-</button>
+<button type="button" class="increase">+</button>
+</div>
+<div class="ticket-info">Tarif Adulte (à partir de 13 ans) : 20€</div>
+</div>
+<div class="input-box">
+<input type="number" name="child_tickets" min="0" value="0" placeholder="Nombre de billets enfants" required>
+<div class="number-controls">
+<button type="button" class="decrease">-</button>
+<button type="button" class="increase">+</button>
+</div>
+<div class="ticket-info">Tarif Enfant (de 3 à 12 ans) : 15€</div>
+</div>
+<div class="price-display">
+Prix total : <span id="totalPrice">0</span>€
+</div>
+<button type="submit" class="btn">Commander</button>
+</form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+const form = document.querySelector('form');
+const inputs = form.querySelectorAll('input[type="number"]');
+const totalPriceSpan = document.getElementById('totalPrice');
+function updateTotal() {
+const adultTickets = parseInt(form.querySelector('input[name="adult_tickets"]').value) || 0;
+const childTickets = parseInt(form.querySelector('input[name="child_tickets"]').value) || 0;
+const total = (adultTickets * 20) + (childTickets * 15);
+totalPriceSpan.textContent = total;
+}
+
+inputs.forEach(input => {
+const controls = input.nextElementSibling;
+controls.querySelector('.decrease').addEventListener('click', () => {
+const currentValue = parseInt(input.value) || 0;
+if (currentValue > 0) {
+input.value = currentValue - 1;
+updateTotal();
+}
+});
+
+controls.querySelector('.increase').addEventListener('click', () => {
+const currentValue = parseInt(input.value) || 0;
+input.value = currentValue + 1;
+updateTotal();
+});
+
+input.addEventListener('input', updateTotal);
+});
+
+updateTotal();
+});
+</script>
+</body>
+</html>
